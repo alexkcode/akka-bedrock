@@ -4,10 +4,10 @@ ThisBuild / version := "0.1.1-SNAPSHOT"
 // ThisBuild / scalaVersion := "2.13.12"
 ThisBuild / scalaVersion := "2.12.19"
 
-val awsSDK = "2.29.15"
+val awsSdkVersion = "2.29.15"
 // val akkaVersion = "2.10.0"
 val akkaVersion = "2.9.0-M1"
-val akkaOtherVersion = "10.5.3"
+val akkaHttpVersion = "10.5.3"
 
 lazy val root = (project in file("."))
   .settings(
@@ -38,17 +38,20 @@ resolvers += Resolver.sbtPluginRepo("releases")
 
 // AWS
 libraryDependencies ++= Seq(
-  "software.amazon.awssdk" % "bedrock" % awsSDK
+  "software.amazon.awssdk" % "bedrock" % awsSdkVersion,
+  "software.amazon.awssdk" % "lambda" % awsSdkVersion
 )
 
 // Akka
 libraryDependencies ++= Seq(
+  "com.lightbend.akka.grpc" %% "akka-grpc-runtime" % "2.3.2",
   "com.typesafe.akka" %% "akka-actor" % akkaVersion,
   "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
   "com.typesafe.akka" %% "akka-pki" % akkaVersion,
-  "com.typesafe.akka" %% "akka-http" % akkaOtherVersion, 
+  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion, 
+  "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-stream" % akkaVersion
 )
 
