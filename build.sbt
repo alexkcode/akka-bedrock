@@ -5,6 +5,9 @@ ThisBuild / version := "0.1.1-SNAPSHOT"
 ThisBuild / scalaVersion := "2.12.19"
 
 val awsSDK = "2.29.15"
+// val akkaVersion = "2.10.0"
+val akkaVersion = "2.9.0-M1"
+val akkaOtherVersion = "10.5.3"
 
 lazy val root = (project in file("."))
   .settings(
@@ -22,6 +25,7 @@ javaOptions in Global ++= Seq("-Xms4g", "-Xmx16g")
 
 resolvers ++= Seq(
   Resolver.mavenCentral,                               // Maven Central repository
+  "Akka library repository" at "https://repo.akka.io/maven",
   "Apache Snapshots" at "https://repository.apache.org/content/repositories/snapshots",
   "Apache repo" at "https://repository.apache.org/",
   "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
@@ -39,15 +43,22 @@ libraryDependencies ++= Seq(
 
 // Akka
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-http" % "10.2.10", 
-  "com.typesafe.akka" %% "akka-stream" % "2.6.21"
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
+  "com.typesafe.akka" %% "akka-pki" % akkaVersion,
+  "com.typesafe.akka" %% "akka-http" % akkaOtherVersion, 
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion
 )
 
 
 // misc. dependencies
 libraryDependencies ++= Seq(
+  "ch.qos.logback" % "logback-classic" % "1.5.8",
   "org.slf4j" % "slf4j-api" % "2.0.16",
   "org.slf4j" % "slf4j-simple" % "2.0.16",
+  "com.typesafe" % "config" % "1.4.3",
   // Add scala-xml for Scala 3 explicitly with version 2.0.1, 
   // which is compatible with Scala 3
   // "org.scala-lang.modules" %% "scala-xml" % "2.0.1"
@@ -56,7 +67,8 @@ libraryDependencies ++= Seq(
 
 // test dependencies
 libraryDependencies ++= Seq(
-  "com.typesafe" % "config" % "1.4.3",
+  "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
+  "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "org.apache.hadoop" % "hadoop-minicluster" % "3.3.0" % Test,
   "org.mockito" % "mockito-core" % "5.14.2" % Test,
