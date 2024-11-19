@@ -3,27 +3,27 @@ package bedrockintegration.client
 import akka.actor.ActorSystem
 import akka.grpc.GrpcClientSettings
 import akka.stream.Materializer
-import bedrockintegration.{BedrockServiceClient, PromptRequest}
-import scala.concurrent.Future
+import bedrock.{BedrockServiceClient, PromptRequest}
 
-object AkkaGrpcBedrockClient extends App {
-  implicit val system: ActorSystem = ActorSystem("AkkaGrpcClient")
-  implicit val materializer: Materializer = Materializer(system)
+import scala.concurrent.{ExecutionContext, Future}
 
-  val grpcSettings: GrpcClientSettings = GrpcClientSettings
-    .connectToServiceAt("your-api-gateway-url", 443) // Replace with API Gateway URL
-    .withTls(true)                                   // Ensure TLS is enabled
+class AkkaGrpcBedrockClient(implicit system: ActorSystem, mat: Materializer, ec: ExecutionContext) {
 
-  val client: BedrockServiceClient = BedrockServiceClient(grpcSettings)
+  // gRPC Client Settings (update host and port as needed)
+  private val clientSettings = GrpcClientSettings.connectToServiceAt("localhost", 8080).withTls(false)
 
-  // Send a request to AWS Lambda (via API Gateway)
-  val prompt = "Translate the following text to French: Hello, world!"
-  val request = PromptRequest(prompt)
+  // Instantiate the gRPC client
+  private val client: BedrockServiceClient = BedrockServiceClient(clientSettings)
 
-  val response: Future[bedrock.PromptResponse] = client.processPrompt(request)
-
-  response.foreach { res =>
-    println(s"Response from Bedrock: ${res.response}")
-    system.terminate()
+  // Method to send a prompt to Bedrock
+  def sendPrompt(prompt: String): Future[String] = {
+    val request = PromptRequest(prompt) // Create request message
+    client.processPrompt(request).map { response =>
+      response.response // Extract response field
+    }
   }
+
+  // Clean up resources
+  def close(): Unit = client.close()
 }
+

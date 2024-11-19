@@ -14,6 +14,21 @@ lazy val root = (project in file("."))
     name := "Exercises441"
   )
 
+enablePlugins(AkkaGrpcPlugin)
+
+akkaGrpcGeneratedLanguages := Seq(AkkaGrpc.Scala)
+
+Compile / PB.includePaths += baseDirectory.value / "src" / "main" / "protobuf"
+
+// Compile / unmanagedSources / excludeFilter := 
+//   HiddenFileFilter || new FileFilter {
+//     override def accept(file: File): Boolean = {
+//       file.getAbsolutePath.matches(""".*/bedrockintegration/.*/.*\.scala""")
+//     }
+//   }
+
+// unmanagedSources in Compile := (unmanagedSources in Compile).value.filterNot(_.name.matches(".*(Actor|Client).scala"))
+
 // javaHome := Some(file("/usr/lib/jvm/java-1.8.0-openjdk-amd64"))
 javacOptions ++= Seq("-source", "11", "-target", "11")
 // scalacOptions += "-target:jvm-1.8"
@@ -80,8 +95,6 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %% "mockito-5-12" % "3.2.19.0" % Test
 )
 
-unmanagedSources in Compile := (unmanagedSources in Compile).value.filterNot(_.name.matches(".*MapReduce.scala"))
-
 // Test / excludeFilter := "*MapReduceSpec.scala"
 
 Test / fork := true
@@ -114,9 +127,6 @@ assembly / assemblyMergeStrategy := {
   case "module-info.class" => MergeStrategy.discard     // Discard module-info.class (Java 9+)
   case PathList(ps @ _*) if ps.last endsWith ".html" => MergeStrategy.discard // Discard HTML docs
   case PathList(ps @ _*) if ps.last endsWith ".txt" => MergeStrategy.discard  // Discard TXT docs
-  // Ignore the old mapreduce code which is in Scala 3
-  // Should not be necessary if files are excluded by unmanagedSources already
-  // case PathList(_, _, xs @ _*) if xs.last.matches(".*(MapReduce)\\.class") => MergeStrategy.discard
   case _ => MergeStrategy.first                        // Use the first file for other conflicts
 }
 
