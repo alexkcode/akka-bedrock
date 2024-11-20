@@ -87,6 +87,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "org.scalatest" %% "scalatest" % "3.2.19" % Test,
   "org.apache.hadoop" % "hadoop-minicluster" % "3.3.0" % Test,
   "org.mockito" % "mockito-core" % "5.14.2" % Test,
